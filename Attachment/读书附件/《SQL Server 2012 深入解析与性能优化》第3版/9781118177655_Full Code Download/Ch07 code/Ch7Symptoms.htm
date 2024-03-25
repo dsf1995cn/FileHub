@@ -1,0 +1,18 @@
+DBCC SQLPERF('sys.dm_os_wait_stats', CLEAR); 
+DBCC SQLPERF('sys.dm_os_latch_stats', CLEAR);
+
+
+SELECT 
+      wait_type, 
+      wait_time_ms,
+      waiting_tasks_count,
+      wait_time_ms / NULLIF(waiting_tasks_count,0) AS avg_wait_time
+FROM  sys.dm_os_wait_stats
+WHERE wait_type LIKE 'LATCH_%'
+OR    wait_type LIKE 'PAGELATCH_%'
+OR    wait_type LIKE 'PAGEIOLATCH_%';
+
+
+SELECT name, collisions, spins_per_collision
+FROM sys.dm_os_spinlock_stats
+ORDER BY spins_per_collision DESC;

@@ -1,0 +1,30 @@
+USE AdventureWorks2012;
+GO
+
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+	
+BEGIN TRANSACTION; 
+
+SELECT  BusinessEntityID
+FROM   Person.Person
+where BusinessEntityID < 10;
+
+SELECT   resource_type
+        ,resource_subtype 
+        ,resource_description
+        ,resource_associated_entity_id
+        ,request_mode
+        ,request_status
+FROM    sys.dm_tran_locks
+WHERE   request_session_id = @@SPID;
+
+ROLLBACK TRAN;
+
+
+
+ALTER DATABASE AdventureWorks
+SET ALLOW_SNAPSHOT_ISOLATION ON;
+
+
+ALTER DATABASE AdventureWorks
+SET READ_COMMITTED_SNAPSHOT ON;
